@@ -12,8 +12,8 @@ int contador_hospedes = 0;
 int carregar_hospedes() {
     FILE *file = fopen(ARQUIVO_HOSPEDES, "r");
     if (!file) {
-        printf("Arquivo de hóspedes não encontrado. Será criado um novo.\n");
-        return 0; // Arquivo não encontrado, mas sem erro crítico
+        printf("Arquivo de hóspedes não encontrado. Será criado um novo ao salvar dados.\n");
+        return 0;
     }
 
     contador_hospedes = 0;
@@ -24,7 +24,7 @@ int carregar_hospedes() {
     }
 
     fclose(file);
-    return 1; // Sucesso
+    return 1;
 }
 
 // Função para salvar dados dos hóspedes no arquivo
@@ -32,7 +32,7 @@ int salvar_hospedes() {
     FILE *file = fopen(ARQUIVO_HOSPEDES, "w");
     if (!file) {
         printf("Erro ao abrir o arquivo de hóspedes para salvar!\n");
-        return 0; // Falha
+        return 0;
     }
 
     for (int i = 0; i < contador_hospedes; i++) {
@@ -40,10 +40,9 @@ int salvar_hospedes() {
     }
 
     fclose(file);
-    return 1; // Sucesso
+    return 1;
 }
 
-// Função para adicionar um hóspede
 int adicionar_hospede() {
     if (contador_hospedes < MAX_HOSPEDES) {
         Hospede novo_hospede;
@@ -58,21 +57,19 @@ int adicionar_hospede() {
         hospedes[contador_hospedes] = novo_hospede;
         contador_hospedes++;
 
-        // Salva as alterações no arquivo
         if (salvar_hospedes()) {
             printf("Hóspede adicionado e salvo com sucesso!\n");
-            return 1;  // Sucesso
+            return 1;
         } else {
             printf("Falha ao salvar o hóspede no arquivo!\n");
-            return 0;  // Falha ao salvar
+            return 0;
         }
     } else {
         printf("Limite máximo de hóspedes atingido!\n");
-        return 0;  // Falha
+        return 0;
     }
 }
 
-// Função para listar hóspedes
 int listar_hospedes() {
     if (contador_hospedes == 0) {
         printf("Nenhum hóspede cadastrado.\n");
@@ -83,33 +80,25 @@ int listar_hospedes() {
     for (int i = 0; i < contador_hospedes; i++) {
         printf("ID: %d, Nome: %s, Contato: %s\n", hospedes[i].id, hospedes[i].nome, hospedes[i].contato);
     }
-    return 1; // Sucesso
+    return contador_hospedes;
 }
 
-// Função para editar um hóspede
-int editar_hospede(int id) {
+int atualizar_hospede(int id, const char *novo_nome, const char *novo_contato) {
     for (int i = 0; i < contador_hospedes; i++) {
         if (hospedes[i].id == id) {
-            printf("Digite o novo nome do hóspede: ");
-            scanf("%99s", hospedes[i].nome);
-
-            printf("Digite o novo contato do hóspede: ");
-            scanf("%49s", hospedes[i].contato);
-
-            if (salvar_hospedes()) {
-                printf("Hóspede atualizado com sucesso!\n");
-                return 1;
-            } else {
-                printf("Falha ao salvar as alterações do hóspede!\n");
-                return 0;
-            }
+            strncpy(hospedes[i].nome, novo_nome, sizeof(hospedes[i].nome) - 1);
+            hospedes[i].nome[sizeof(hospedes[i].nome) - 1] = '\0';
+            strncpy(hospedes[i].contato, novo_contato, sizeof(hospedes[i].contato) - 1);
+            hospedes[i].contato[sizeof(hospedes[i].contato) - 1] = '\0';
+            salvar_hospedes();
+            printf("Hóspede atualizado com sucesso.\n");
+            return 1;
         }
     }
     printf("Hóspede com ID %d não encontrado.\n", id);
     return 0;
 }
 
-// Função para excluir um hóspede
 int excluir_hospede(int id) {
     int encontrado = 0;
     for (int i = 0; i < contador_hospedes; i++) {
@@ -122,26 +111,23 @@ int excluir_hospede(int id) {
     }
     if (encontrado) {
         contador_hospedes--;
-        if (salvar_hospedes()) {
-            printf("Hóspede excluído com sucesso!\n");
-            return 1;
-        } else {
-            printf("Falha ao salvar após excluir o hóspede!\n");
-            return 0;
-        }
+        salvar_hospedes();
+        printf("Hóspede excluído com sucesso.\n");
+        return 1;
     }
     printf("Hóspede com ID %d não encontrado.\n", id);
     return 0;
 }
 
-// Função para gerenciar hóspedes
 int gerenciar_hospedes() {
+    carregar_hospedes(); // Carregar hóspedes ao iniciar o gerenciamento
+
     int opcao;
     do {
         printf("\nGerenciamento de Hóspedes\n");
         printf("1. Adicionar Hóspede\n");
         printf("2. Listar Hóspedes\n");
-        printf("3. Editar Hóspede\n");
+        printf("3. Atualizar Hóspede\n");
         printf("4. Excluir Hóspede\n");
         printf("0. Voltar\n");
         printf("Escolha uma opção: ");
@@ -156,9 +142,17 @@ int gerenciar_hospedes() {
                 break;
             case 3: {
                 int id;
-                printf("Digite o ID do hóspede a ser editado: ");
+                char novo_nome[100];
+                char novo_contato[50];
+
+                printf("Digite o ID do hóspede a ser atualizado: ");
                 scanf("%d", &id);
-                editar_hospede(id);
+                printf("Digite o novo nome do hóspede: ");
+                scanf("%99s", novo_nome);
+                printf("Digite o novo contato do hóspede: ");
+                scanf("%49s", novo_contato);
+
+                atualizar_hospede(id, novo_nome, novo_contato);
                 break;
             }
             case 4: {
@@ -176,7 +170,5 @@ int gerenciar_hospedes() {
         }
     } while (opcao != 0);
 
-    return 1; // Sucesso
+    return 1;
 }
-
-
