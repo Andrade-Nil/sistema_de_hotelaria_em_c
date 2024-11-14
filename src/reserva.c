@@ -64,8 +64,11 @@ void listar_reservas_antecipadas() {
     printf("Lista de Reservas Antecipadas:\n");
     for (int i = 0; i < contador_reservas; i++) {
         printf("ID: %d, Hóspede ID: %d, Quarto ID: %d, Entrada: %s, Saída: %s\n",
-               reservas[i].id, reservas[i].id_hospede, reservas[i].id_quarto,
-               reservas[i].data_entrada, reservas[i].data_saida);
+               reservas[i].id,
+               reservas[i].id_hospede,
+               reservas[i].id_quarto,
+               reservas[i].data_entrada,
+               reservas[i].data_saida);
     }
 }
 
@@ -75,52 +78,48 @@ int editar_reserva(int id, Reserva reserva_editada) {
         if (reservas[i].id == id) {
             reservas[i] = reserva_editada;
             salvar_reservas_no_arquivo();
-            printf("Reserva editada com sucesso!\n");
-            return 1; // Sucesso
+            printf("Reserva ID %d editada com sucesso!\n", id);
+            return 1;
         }
     }
-    printf("Reserva com ID %d não encontrada.\n", id);
-    return 0; // Falha
+    printf("Reserva ID %d não encontrada.\n", id);
+    return 0;
 }
 
 // Função para excluir uma reserva
 int excluir_reserva(int id) {
-    int encontrado = 0;
     for (int i = 0; i < contador_reservas; i++) {
         if (reservas[i].id == id) {
-            encontrado = 1;
-        }
-        if (encontrado && i < contador_reservas - 1) {
-            reservas[i] = reservas[i + 1];
+            for (int j = i; j < contador_reservas - 1; j++) {
+                reservas[j] = reservas[j + 1];
+            }
+            contador_reservas--;
+            salvar_reservas_no_arquivo();
+            printf("Reserva ID %d excluída com sucesso!\n", id);
+            return 1;
         }
     }
-    if (encontrado) {
-        contador_reservas--;
-        salvar_reservas_no_arquivo();
-        printf("Reserva excluída com sucesso!\n");
-        return 1; // Sucesso
-    }
-    printf("Reserva com ID %d não encontrada.\n", id);
-    return 0; // Falha
+    printf("Reserva ID %d não encontrada.\n", id);
+    return 0;
 }
 
-// Função para acessar o contador de reservas
+// Função para verificar o contador de reservas
 int get_contador_reservas() {
     return contador_reservas;
 }
 
-// Menu para adicionar uma nova reserva
+// Função para menu de adicionar reserva
 void menu_adicionar_reserva() {
     Reserva nova_reserva;
-    printf("Digite o ID da reserva: ");
-    scanf("%d", &nova_reserva.id);
+    nova_reserva.id = (contador_reservas == 0) ? 1 : reservas[contador_reservas - 1].id + 1;
+
     printf("Digite o ID do hóspede: ");
     scanf("%d", &nova_reserva.id_hospede);
     printf("Digite o ID do quarto: ");
     scanf("%d", &nova_reserva.id_quarto);
-    printf("Digite a data de entrada (DD/MM/YYYY): ");
+    printf("Digite a data de entrada (dd/mm/aaaa): ");
     scanf("%s", nova_reserva.data_entrada);
-    printf("Digite a data de saída (DD/MM/YYYY): ");
+    printf("Digite a data de saída (dd/mm/aaaa): ");
     scanf("%s", nova_reserva.data_saida);
 
     adicionar_reserva_antecipada(nova_reserva);

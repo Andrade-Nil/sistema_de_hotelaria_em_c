@@ -50,8 +50,12 @@ int main() {
                 listar_locacoes();
                 break;
             case 5:
-                // Funções de alertas
+                printf("Digite o ID da reserva para verificar o alerta de fim: ");
+                int id_reserva;
+                scanf("%d", &id_reserva);
+                alerta_fim_reserva(id_reserva);
                 break;
+
             case 6:
                 menu_adicionar_reserva(); // Altera aqui para chamar menu_adicionar_reserva()
                 break;

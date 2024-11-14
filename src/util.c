@@ -46,3 +46,14 @@ void verificar_arquivos() {
         printf("Arquivo '%s' verificado ou criado com sucesso.\n", arquivos[i]);
     }
 }
+// Função para calcular a diferença em dias entre duas datas no formato dd/mm/aaaa
+int diferenca_dias(const char *data1, const char *data2) {
+    struct tm tm1 = {0}, tm2 = {0};
+    strptime(data1, "%d/%m/%Y", &tm1);
+    strptime(data2, "%d/%m/%Y", &tm2);
+    
+    time_t t1 = mktime(&tm1);
+    time_t t2 = mktime(&tm2);
+    
+    return (int)difftime(t2, t1) / (60 * 60 * 24);
+}
