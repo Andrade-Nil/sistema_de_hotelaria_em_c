@@ -28,4 +28,17 @@ int datas_conflitantes(const char* data1, int diarias1, const char* data2, int d
 extern Locacao locacoes[MAX_LOCACOES]; // Declare a variável externa aqui
 extern int contador_locacoes; // Declare a variável externa aqui
 
+// void exibir_alerta_estender_locacao(int id_locacao) {
+//     for (int i = 0; i < contador_locacoes; i++) {
+//         if (locacoes[i].id == id_locacao) {
+//             // Lógica para alertar admin sobre possível extensão
+//             printf("⚠️ Locação ID %d com hóspede ID %d em breve poderá ser estendida.\n", 
+//                    locacoes[i].id, locacoes[i].id_hospede);
+//             return;
+//         }
+//     }
+//     printf("Locação com ID %d não encontrada para alerta.\n", id_locacao);
+// }
+
+
 #endif // LOCACAO_H

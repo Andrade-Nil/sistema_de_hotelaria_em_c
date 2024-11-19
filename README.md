@@ -78,5 +78,3 @@ gcc -o hotel_system main.c reserva.c quarto.c hospede.c locacao.c relatorios.c a
 - **Contribuição**: Você pode adicionar mais informações sobre como contribuir, se necessário.
 
 Com essas informações, os usuários do seu sistema terão um guia completo sobre como preparar o ambiente para a execução do software. Se precisar de mais detalhes ou ajustes, é só avisar!
-
-
